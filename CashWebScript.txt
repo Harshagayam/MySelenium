@@ -1,0 +1,102 @@
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.PageLoadStrategy;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+
+
+public class CashWeb {
+
+	public static void main(String[] args) throws InterruptedException {
+		System.setProperty("webdriver.chrome.driver", "//svrau570bsm01.oceania.corp.anz.com/gayamh$/workspace/chromedriver.exe");
+		ChromeOptions options = new ChromeOptions();
+		options.setPageLoadStrategy(PageLoadStrategy.NONE);
+		System.out.println("Ok");
+        WebDriver driver = new ChromeDriver();
+        driver.manage().window().maximize();
+        driver.get("https://tasgcpe2e3anztransactive.online.ecom.anz/GCPCW/ssoindex.jsp");
+        //Login to CashWeb
+        WebElement Makerlogin = driver.findElement(By.id("UserID"));
+        		   Makerlogin.click();
+        		   Makerlogin.sendKeys("MMPSGCWU11");
+        WebElement LoginButton = driver.findElement(By.name("login"));
+                   LoginButton.click();
+        //Navigate to Payment summary screen
+        WebElement Paymnet = driver.findElement(By.id("mbar_Payments"));
+                   Paymnet.click();
+        WebElement Payments = driver.findElement(By.xpath("//*[@id='h_15']/a"));
+                   Payments.click();
+        WebElement PaymentSummaryScreen = driver.findElement(By.partialLinkText("Payments Summary"));
+                   PaymentSummaryScreen.click();
+        //Click on new button in instrument screen to select an Payment product
+        WebElement New = driver.findElement(By.id("btnNew"));
+                   New.click();
+        WebElement ProductSearch = driver.findElement(By.id("prdSearch"));
+        		   ProductSearch.sendKeys("TTPYMNT");
+        		   driver.findElement(By.xpath("//*[@id='prdList']/li[45]/a/span")).click();
+         //To select the Transaction Currency
+        	Select PaymentCurrency = new Select(driver.findElement(By.id("txnCurrency")));
+        	       PaymentCurrency.selectByIndex(1);
+         //To select the Payment Product
+        	Select PaymentProduct = new Select(driver.findElement(By.id("bankProduct")));
+        	       PaymentProduct.selectByIndex(1);
+        WebElement ClientReference = driver.findElement(By.id("referenceNo"));
+                   ClientReference.click();
+                   ClientReference.sendKeys("AutoGenTxn");
+        //To select Debit account
+         WebElement DebitAccount = driver.findElement(By.id("accountNo"));
+                    DebitAccount.click();
+         Select Account = new Select(DebitAccount);
+                    Account.selectByValue("004515SGD00001");
+                    //driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS); 
+         //To input Beneficiary
+         WebElement Beneficiary= driver.findElement(By.xpath("//*[@id='hrefid_beneficiary.drawerCode']"));
+         JavascriptExecutor executor = (JavascriptExecutor) driver;
+         executor.executeScript("arguments[0].click();", Beneficiary);
+                    //Perform the click operation that opens new window and Store the current window handle
+                    String ParentWindow = driver.getWindowHandle();
+                    System.out.println("ParentWindow is : " +ParentWindow);
+                    Beneficiary.click();
+                    driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+                     // Switch to new window opened
+                     for(String ChildWindow : driver.getWindowHandles())
+                     {
+                        driver.switchTo().window(ChildWindow);
+                        System.out.println("ChildWindow is : " +ChildWindow);
+                        System.out.println(driver.getTitle());
+                     }
+                        driver.manage().window().maximize();              
+                            // Perform the actions on new window
+                        driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+                         WebElement Seek = driver.findElement(By.id("code"));
+                                    Seek.sendKeys("AAAAA11111");
+                         WebElement filter = driver.findElement(By.id("F3"));
+                                    filter.click();
+                         WebElement BeneName = driver.findElement(By.linkText("AAAAA11111"));
+                                    BeneName.click();      
+                          // Close the new window, if that window no more required
+                         //driver.close();
+                        System.out.println("Okokok");
+                      // Switch back to original browser (first window)
+                         //driver.switchTo().window(ParentWindow);          
+                        Thread.sleep(2000);
+                        driver.switchTo().window(ParentWindow);
+                         WebElement PaymentAmount = driver.findElement(By.id("amount"));
+                                    PaymentAmount.click();
+                                    PaymentAmount.sendKeys("199");
+                         WebElement Submit = driver.findElement(By.id("btnSaveClose"));
+                                    Submit.click();
+                                    //Submit.submit();
+                                    Thread.sleep(6000);        
+                         System.out.println("Great!");
+ 
+
+	}
+
+}
